@@ -1,23 +1,23 @@
 #!/bin/bash
 
 # Handle any input errors.
-if [ -z $1 ]; then
+if [ -z $1 ]; then # If $1 is null then print error and exit.
 
 	echo "No directory provided. Use 'chd help' to get a usage guide."
 	return
 
-elif [ ! -z $2 ]; then
+elif [ ! -z $2 ]; then # If $2 is not null then...
 
-	if [ $1 != "add" ] || [ $1 != "delete" ]; then
+	if [ $1 != "add" ] && [ $1 != "delete" ]; then # If $1 is not add or delete then print error and exit.
 
-        	echo "$1 is not a valid directory."
+        	echo "$1 is not a valid command. Use 'chd help' to get a usage guide."
         	return
 
 	fi
 
-elif [ ! -z $3 ]; then 
+elif [ ! -z $3 ]; then # If $3 is not null then...
 		
-	if [ ! -d $3 ]; then
+	if [ ! -d $3 ]; then # If $3 is not a directory then print error and exit.
 
 		echo "'$3' is not a valid directory on this computer."
 		echo "Use 'chd help' to get a usage guide."
@@ -27,25 +27,16 @@ elif [ ! -z $3 ]; then
 
 fi
 
-length=$(wc -l < ~/bin/chdlist) 
+# Get the length of the directory list.
+length=$(wc -l < chdlist) 
 
-if [ $length == 0 ]; then
+# Handle valid inputs.
+if [ $length == 0 ]; then # If the length of the directory list is 0 then print error and exit.
 
 	echo "No directories set. See 'chd help' on how to add directories."
 	return
 
-else
-	
-	for val in $(~/bin/chdlist) 	
-	do
-		echo $val
-	done 
-	return
-
-fi
-
-
-if [ $1 == "list" ]; then
+elif [ $1 == "list" ]; then # If $1 is list then print the supported directories.
 
 	echo "---------------------"
 	echo "Supported Directories"
@@ -55,7 +46,7 @@ if [ $1 == "list" ]; then
 	echo "skopos: $skopos"
 	echo "---------------------"
 
-elif [ $1 == "help" ]; then
+elif [ $1 == "help" ]; then # If $1 is help then print out a usage guide.
 
 	echo "This command is used to shorten 'cd' to certain directories."
 	echo "It is used by specifying a directory after chd: 'chd directory'"
@@ -66,8 +57,19 @@ elif [ $1 == "help" ]; then
 	echo "Directories can be deleted with: 'chd delete name'"
 	echo "chd delete space"
 
-else
+else # Else...
 
-	echo "$1 is not a supported directory. See directories with 'chd list'."
+	found=false
+
+	for val in $(<chdlist) 	
+	do
+		echo $val
+	done 
+
+	if ! $found; then
+
+		echo "$1 is not a supported directory. See directories with 'chd list'."
+
+	fi
 
 fi
