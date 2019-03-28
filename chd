@@ -59,16 +59,27 @@ elif [ $1 == "help" ]; then # If $1 is help then print out a usage guide.
 
 else # Else...
 
-	found=false
+	found=false # Use to tell if directory exists.
 
-	for val in $(<chdlist) 	
+	for val in $(<chdlist) 	# Loop to search for the directory.
 	do
-		echo $val
+		if [ $val == $1 ]; then # If directory found then set found to true and loop one more time to get the directory location.
+
+			found=true
+
+		elif $found; then # If directory found then...
+
+			val="cd $val" # Add 'cd ' infront of $val.
+			eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
+			break # Break the loop.
+
+		fi
 	done 
 
-	if ! $found; then
+	if ! $found; then # If the directory was not found then print error and exit.
 
 		echo "$1 is not a supported directory. See directories with 'chd list'."
+		return
 
 	fi
 
