@@ -1,0 +1,73 @@
+#!/bin/bash
+
+# Handle any input errors.
+if [ -z $1 ]; then
+
+	echo "No directory provided. Use 'chd help' to get a usage guide."
+	return
+
+elif [ ! -z $2 ]; then
+
+	if [ $1 != "add" ] || [ $1 != "delete" ]; then
+
+        	echo "$1 is not a valid directory."
+        	return
+
+	fi
+
+elif [ ! -z $3 ]; then 
+		
+	if [ ! -d $3 ]; then
+
+		echo "'$3' is not a valid directory on this computer."
+		echo "Use 'chd help' to get a usage guide."
+		return
+
+	fi
+
+fi
+
+length=$(wc -l < ~/bin/chdlist) 
+
+if [ $length == 0 ]; then
+
+	echo "No directories set. See 'chd help' on how to add directories."
+	return
+
+else
+	
+	for val in $(~/bin/chdlist) 	
+	do
+		echo $val
+	done 
+	return
+
+fi
+
+
+if [ $1 == "list" ]; then
+
+	echo "---------------------"
+	echo "Supported Directories"
+	echo "---------------------"
+	echo "projects: $projects"	
+	echo "work: $work"
+	echo "skopos: $skopos"
+	echo "---------------------"
+
+elif [ $1 == "help" ]; then
+
+	echo "This command is used to shorten 'cd' to certain directories."
+	echo "It is used by specifying a directory after chd: 'chd directory'"
+	echo "A list of valid directories can be viewed with: 'chd list'"
+	echo "Directories can be added with 'chd add name directory':"
+	echo "chd add space ~/Documents/space"
+	echo "Now 'chd space' will cd to the directory '~/Documents/space'"
+	echo "Directories can be deleted with: 'chd delete name'"
+	echo "chd delete space"
+
+else
+
+	echo "$1 is not a supported directory. See directories with 'chd list'."
+
+fi
