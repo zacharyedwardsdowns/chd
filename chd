@@ -38,12 +38,27 @@ if [ $length == 0 ]; then # If the length of the directory list is 0 then print 
 
 elif [ $1 == "list" ]; then # If $1 is list then print the supported directories.
 
+	i=0 # Incrimentor variable
+
 	echo "---------------------"
 	echo "Supported Directories"
 	echo "---------------------"
-	echo "projects: $projects"	
-	echo "work: $work"
-	echo "skopos: $skopos"
+
+	for val in $(<chdlist) 	# Loop to search for the directory.
+	do
+		if ! (($i % 2)); then # If directory found then set found to true and loop one more time to get the directory location.
+
+			direc="$val:" # Get the directory name when even.
+
+		else
+
+			echo "$direc $val" # When odd print the directory and it's location.
+
+		fi
+
+		i=$(($i + 1)) # Incriment i.
+	done 
+
 	echo "---------------------"
 
 elif [ $1 == "help" ]; then # If $1 is help then print out a usage guide.
