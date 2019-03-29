@@ -10,8 +10,13 @@ elif [ ! -z $2 ]; then # If $2 is not null then...
 
 	if [ $1 != "add" ] && [ $1 != "delete" ]; then # If $1 is not add or delete then print error and exit.
 
-        	echo "$1 is not a valid command. Use 'chd help' to get a usage guide."
-        	return
+        echo "$1 is not a valid command. Use 'chd help' to get a usage guide."
+        return
+
+	elif [ -z $3 ] && [ $1 == "add" ]; then
+
+		echo "No directory provided for add. Use 'chd help' to get a usge guide."
+		return
 
 	fi
 
@@ -71,6 +76,12 @@ elif [ $1 == "help" ]; then # If $1 is help then print out a usage guide.
 	echo "Now 'chd space' will cd to the directory '~/Documents/space'"
 	echo "Directories can be deleted with: 'chd delete name'"
 	echo "chd delete space"
+
+elif [ $1 == "add" ] && [ ! -z $2 ] && [ ! -z $3 ]; then
+
+	stordir="$2 $3" # Seperate the directory name and location by a space.
+
+	echo $stordir >> chdlist # Store them into chdlist.
 
 else # Else...
 
