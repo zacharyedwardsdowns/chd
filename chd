@@ -1,14 +1,21 @@
 #!/bin/bash
 
-# Handle any input errors.
-if [ -z $1 ]; then # If $1 is null then print error and exit.
+###
+### Handle any input errors.
+###
 
-	echo "No directory provided. Use 'chd help' to get a usage guide."
+if [ -z $1 ]; then # If $1 is null then echo error and exit.
+
+	echo "No directory provided."
+	echo "Use 'chd help' for a usage guide."
 	return
 
-elif [ ! -z $2 ]; then # If $2 is not null then...
+fi
 
-	if [ $1 != "add" ] && [ $1 != "delete" ]; then # If $1 is not add or delete then print error and exit.
+# If $2 is not null then...
+if [ ! -z $2 ]; then
+
+	if [ $1 != "add" ] && [ $1 != "delete" ]; then # If $1 is not add or delete then echo error and exit.
 
         echo "$1 is not a valid command. Use 'chd help' to get a usage guide."
         return
@@ -20,28 +27,36 @@ elif [ ! -z $2 ]; then # If $2 is not null then...
 
 	fi
 
-elif [ ! -z $3 ]; then # If $3 is not null then...
-		
-	if [ ! -d $3 ]; then # If $3 is not a directory then print error and exit.
+fi
 
-		echo "'$3' is not a valid directory on this computer."
-		echo "Use 'chd help' to get a usage guide."
+# If $3 is not null then if it's not a directory then echo error and exit.
+if [ ! -z $3 ]; then
+		
+	if [ ! -d $3 ]; then # If $3 is not a directory then echo error and exit.
+
+		echo "'$3' is not a valid directory."
+		echo "Use 'chd help' for a usage guide."
 		return
 
 	fi
 
 fi
 
+
+
+###
+### Handle valid inputs
+###
+
 # Get the length of the directory list.
 length=$(wc -l < chdlist) 
 
-# Handle valid inputs.
-if [ $length == 0 ]; then # If the length of the directory list is 0 then print error and exit.
+if [ $length == 0 ]; then # If the length of the directory list is 0 then echo error and exit.
 
 	echo "No directories set. See 'chd help' on how to add directories."
 	return
 
-elif [ $1 == "list" ]; then # If $1 is list then print the supported directories.
+elif [ $1 == "list" ]; then # If $1 is list then echo the supported directories.
 
 	i=0 # Incrimentor variable
 
@@ -57,7 +72,7 @@ elif [ $1 == "list" ]; then # If $1 is list then print the supported directories
 
 		else
 
-			echo "$direc $val" # When odd print the directory and it's location.
+			echo "$direc $val" # When odd echo the directory and it's location.
 
 		fi
 
@@ -66,7 +81,7 @@ elif [ $1 == "list" ]; then # If $1 is list then print the supported directories
 
 	echo "---------------------"
 
-elif [ $1 == "help" ]; then # If $1 is help then print out a usage guide.
+elif [ $1 == "help" ]; then # If $1 is help then echo out a usage guide.
 
 	echo "This command is used to shorten 'cd' to certain directories."
 	echo "It is used by specifying a directory after chd: 'chd directory'"
@@ -102,7 +117,7 @@ else # Else...
 		fi
 	done 
 
-	if ! $found; then # If the directory was not found then print error and exit.
+	if ! $found; then # If the directory was not found then echo error and exit.
 
 		echo "$1 is not a supported directory. See directories with 'chd list'."
 		return
