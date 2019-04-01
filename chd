@@ -4,7 +4,8 @@
 ### Handle any input errors.
 ###
 
-if [ -z $1 ]; then # If $1 is null then echo error and exit.
+# If $1 is null then echo error and exit.
+if [ -z $1 ]; then
 
 	echo "No directory provided."
 	echo "Use 'chd help' for a usage guide."
@@ -12,17 +13,28 @@ if [ -z $1 ]; then # If $1 is null then echo error and exit.
 
 fi
 
-# If $2 is not null then...
+# If $2 is not null then...s
 if [ ! -z $2 ]; then
 
 	if [ $1 != "add" ] && [ $1 != "delete" ]; then # If $1 is not add or delete then echo error and exit.
 
         echo "$1 is not a valid command. Use 'chd help' to get a usage guide."
         return
+	
+	fi
 
-	elif [ -z $3 ] && [ $1 == "add" ]; then
+	if [ -z $3 ] && [ $1 == "add" ]; then
 
 		echo "No directory provided for add. Use 'chd help' to get a usge guide."
+		return
+
+	fi
+
+else
+
+	if [ $1 == "add" ] || [ $1 == "delete" ]; then
+
+		echo "Ivalid use of the $1 command. Use 'chd help' to get a usage guide."
 		return
 
 	fi
@@ -31,6 +43,13 @@ fi
 
 # If $3 is not null then if it's not a directory then echo error and exit.
 if [ ! -z $3 ]; then
+
+	if [ $1 == "delete" ]; then
+
+		echo "Ivalid use of the $1 command. Use 'chd help' to get a usage guide."
+		return
+
+	fi
 		
 	if [ ! -d $3 ]; then # If $3 is not a directory then echo error and exit.
 
@@ -42,16 +61,22 @@ if [ ! -z $3 ]; then
 
 fi
 
+if [ ! -z $4 ]; then
+
+	echo "Ivalid use of the $1 command. Use 'chd help' to get a usage guide."
+	return
+
+fi
+
 
 
 ###
 ### Handle valid inputs
 ###
 
-# Get the length of the directory list.
-length=$(wc -l < chdlist) 
+length=$(wc -l < chdlist) # Get the length of the directory list.
 
-if [ $length == 0 ]; then # If the length of the directory list is 0 then echo error and exit.
+if [ $length == 0 ] && [ $1 != "add" ] && [ $1 != "help" ]; then # If the length of the directory list is 0 then echo error and exit.
 
 	echo "No directories set. See 'chd help' on how to add directories."
 	return
@@ -92,11 +117,51 @@ elif [ $1 == "help" ]; then # If $1 is help then echo out a usage guide.
 	echo "Directories can be deleted with: 'chd delete name'"
 	echo "chd delete space"
 
-elif [ $1 == "add" ] && [ ! -z $2 ] && [ ! -z $3 ]; then
+elif [ $1 == "add" ]; then
+
+	i=0
+
+	for val in $(<chdlist) 	# Loop to search for the directory.
+	do
+		if ! (($i % 2)); then # If directory found then set found to true and loop one more time to get the directory location.
+
+			if [ $2 == $val ]; then
+
+				echo "$2 is already in use as a directory name."
+				echo "Use a different name for the directory: '$3'"
+				return
+
+			fi
+
+			tmp=$val
+
+		else
+
+			if [ $3 == $val ]; then
+
+				echo "'$3' is already listed under the directory name: $tmp."
+				read -p "Would you like to have it under both names? (Y/N): " response
+
+				if [ ${response,,} != "y" ] && [ ${response,,} != "yes" ]; then
+
+
+					echo "'$3' not created under the name $2."
+					return
+
+				fi
+
+			fi
+
+		fi
+
+		i=$(($i + 1)) # Incriment i.
+	done 
 
 	stordir="$2 $3" # Seperate the directory name and location by a space.
 
 	echo $stordir >> chdlist # Store them into chdlist.
+
+	echo "You may now use 'chd $2' to cd to '$3'"
 
 else # Else...
 
