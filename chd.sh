@@ -101,6 +101,13 @@ clpath=${clpath%.sh} # Remove .sh from the end of clpath.
 list="list" # Define list with a value of list.
 clpath="$clpath$list" # Concatenate $clpath and $list into clpath.
 
+# If chdlist is not found then create it!
+if [ ! -f $clpath ]; then
+
+	touch ${clpath}
+
+fi
+
 length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
 
 # If the length of the directory list is 0 then echo error and exit if $1 is not add or help.
