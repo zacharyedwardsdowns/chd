@@ -179,6 +179,57 @@ elif [ $1 == "add" ]; then
 
 	echo "You may now use 'chd $2' to cd to '$3'" # Notifty the user that the directory has been adeded. 
 
+# Elif $1 is delete then delete the specified directory from chdlist if it exists.
+elif [ $1 == "delete" ]; then
+
+	i=0 # Incrimtentor variable.
+	found=false # Used to tell if the specified directory was found.
+
+	for val in $(<chdlist) 	# Loop for directory to delete.
+	do
+		# If a found is true and $val is a directory name set found to false.
+		if $found && ! (($i % 2)); then
+
+			found=false
+
+		fi
+
+		# If $val is $2 then set found to true.
+		if [ $val == $2 ]; then
+
+			found=true
+
+		fi
+
+		# If found is false and $val is a directory name set last to $val.
+		if ! (($i % 2)) && ! $found; then
+
+			last=$val
+
+		# If $val is a directory location and found is false then echo $last and $val to cldel.
+		elif ! $found; then
+
+			echo "$last $val"
+
+		fi
+
+		i=$(($i + 1)) # Incriment i.
+	done <chdlist> cldel # Output echo statements to cldel.
+
+	# If the length of chdlist is the same as cldel then directory name $2 doesn't exist. Remove cldel.
+	if [ $length == $(wc -l < cldel) ];then
+
+		echo "$2 is not a directory name. Nothing deleted."
+		rm cldel
+
+	# Else the specified directory name and directory location were removed. Make cldel into chdlist.
+	else
+
+		echo "$2 was removed from supported directories."
+		mv cldel chdlist
+
+	fi
+
 # Else attempt to change directories if $1 is a directory name in chdlist.
 else
 
