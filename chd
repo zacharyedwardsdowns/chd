@@ -85,7 +85,22 @@ fi
 ### Handle valid inputs
 ###
 
-length=$(wc -l < chdlist) # Get the length of the directory list.
+clpath=$(type -a chd) # Get the path of the chd command.
+
+# Retrieve the path from type -a output.
+for val in $clpath
+do
+	if [ $val != "chd" ] && [ $val != "is" ]; then
+
+		clpath=$val
+
+	fi
+done
+
+list="list" # Define list with a value of list.
+clpath="$clpath$list" # Concatenate $clpath and $list into clpath.	
+
+length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
 
 # If the length of the directory list is 0 then echo error and exit if $1 is not add or help.
 if [ $length == 0 ] && [ $1 != "add" ] && [ $1 != "help" ]; then
@@ -102,7 +117,7 @@ elif [ $1 == "list" ]; then
 	echo "Supported Directories"
 	echo "---------------------"
 
-	for val in $(<chdlist) 	# Loop to display supported directories.
+	for val in $(<$clpath) 	# Loop to display supported directories.
 	do
 		if ! (($i % 2)); then # If $i mod 2 is 0 then set direc to $val.
 
@@ -137,7 +152,7 @@ elif [ $1 == "add" ]; then
 
 	i=0 # Incrimentor variable.
 
-	for val in $(<chdlist) 	# Loop to search for existing directories.
+	for val in $(<$clpath) 	# Loop to search for existing directories.
 	do
 		if ! (($i % 2)); then # If the mod of $i is 0 then...
 
@@ -175,7 +190,7 @@ elif [ $1 == "add" ]; then
 
 	stordir="$2 $3" # Seperate the directory name and location by a space.
 
-	echo $stordir >> chdlist # Store them into chdlist.
+	echo $stordir >> $clpath # Store them into chdlist.
 
 	echo "You may now use 'chd $2' to cd to '$3'" # Notifty the user that the directory has been adeded. 
 
@@ -185,7 +200,11 @@ elif [ $1 == "delete" ]; then
 	i=0 # Incrimtentor variable.
 	found=false # Used to tell if the specified directory was found.
 
-	for val in $(<chdlist) 	# Loop for directory to delete.
+	cldpath=${clpath%chdlist} # Remove chdlist from the end of clpath and store in cldpath.
+	cldel="cldel" # Define cldel with a value of cldel.
+	cldpath="$cldpath$cldel" # Concatenate $cldel to the end of $cldpath.
+
+	for val in $(<$clpath) 	# Loop for directory to delete.
 	do
 		# If a found is true and $val is a directory name set found to false.
 		if $found && ! (($i % 2)); then
@@ -214,19 +233,19 @@ elif [ $1 == "delete" ]; then
 		fi
 
 		i=$(($i + 1)) # Incriment i.
-	done <chdlist> cldel # Output echo statements to cldel.
+	done <$clpath> $cldpath # Output echo statements to cldel.
 
 	# If the length of chdlist is the same as cldel then directory name $2 doesn't exist. Remove cldel.
-	if [ $length == $(wc -l < cldel) ];then
+	if [ $length == $(wc -l < $cldpath) ];then
 
 		echo "$2 is not a directory name. Nothing deleted."
-		rm cldel
+		rm $cldpath
 
 	# Else the specified directory name and directory location were removed. Make cldel into chdlist.
 	else
 
 		echo "$2 was removed from supported directories."
-		mv cldel chdlist
+		mv $cldpath $clpath
 
 	fi
 
@@ -235,7 +254,7 @@ else
 
 	found=false # Use to tell if directory exists.
 
-	for val in $(<chdlist) 	# Loop to search for the directory.
+	for val in $(<$clpath) 	# Loop to search for the directory.
 	do
 		if [ $val == $1 ]; then # If directory found then set found to true and loop one more time to get the directory location.
 
