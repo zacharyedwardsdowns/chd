@@ -19,9 +19,9 @@ if [ ! -z $2 ]; then
 	# If $1 is not add or delete then echo error and exit.
 	if [ $1 != "add" ] && [ $1 != "delete" ]; then
 
-        echo "$1 is not a valid command."
+        	echo "$1 is not a valid command."
 		echo "Use 'chd help' to get a usage guide."
-        return
+        	return
 	
 	fi
 
