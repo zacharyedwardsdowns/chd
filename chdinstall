@@ -1,11 +1,19 @@
 #!/bin/bash
 
-chddir=$(pwd) # Store the istallation directory into chddir.
+chddir=$(pwd) # Store the installation directory into chddir.
+tab='    ' # For appropriate spacing.
 
 # Add the directory to .profile.
 echo '' >> ~/.profile
 echo "if [ -d "$chddir" ] ; then" >> ~/.profile
-echo "    PATH='$chddir:$PATH'" >> ~/.profile
+
+# Create the proper variable to add to path.
+pathchd='PATH="'
+pathchd+="$chddir" 
+pathchd+=':$PATH'
+pathchd+='"'
+echo "$tab$pathchd" >> ~/.profile
+
 echo 'fi' >> ~/.profile
 
 # Add an alias to .bash_aliases.
