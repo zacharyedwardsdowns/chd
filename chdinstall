@@ -1,0 +1,16 @@
+#!/bin/bash
+
+chddir=$(pwd) # Store the istallation directory into chddir.
+
+# Add the directory to .profile.
+echo '' >> ~/.profile
+echo "if [ -d "$chddir" ] ; then" >> ~/.profile
+echo "    PATH='$chddir:$PATH'" >> ~/.profile
+echo 'fi' >> ~/.profile
+
+# Add an alias to .bash_aliases.
+echo "alias chd='. chd.sh'" >> ~/.bash_aliases
+
+# Tell the user log out must occur for changes to take effect.
+echo 'Changes made to ~/.profile and ~/.bash_aliases.'
+echo 'Log Out or Restart needed for installation to complete.'

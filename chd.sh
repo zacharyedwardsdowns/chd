@@ -85,7 +85,7 @@ fi
 ### Handle valid inputs
 ###
 
-clpath=$(type -a chd) # Get the path of the chd command.
+clpath=$(type -a chd.sh) # Get the path of the chd command.
 
 # Retrieve the path from type -a output.
 for val in $clpath
@@ -97,8 +97,9 @@ do
 	fi
 done
 
+clpath=${clpath%.sh} # Remove .sh from the end of clpath.
 list="list" # Define list with a value of list.
-clpath="$clpath$list" # Concatenate $clpath and $list into clpath.	
+clpath="$clpath$list" # Concatenate $clpath and $list into clpath.
 
 length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
 
