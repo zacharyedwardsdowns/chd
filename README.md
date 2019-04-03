@@ -1,2 +1,48 @@
 # chd
-Command to make changing to frequently visited directories faster.
+A script to make changing to frequently visited and or long path directories faster by allowing the user to link it to a name.
+Then by using 'chd name' the terminal will change to the linked directory.
+
+### Installation
+To install chd first clone the repositroy to your desired directory using:
+
+`git clone https://github.com/Remedee/chd`
+
+Change directory (cd) into the chd folder. Then run the install file using:
+
+`. chdinstall`
+
+Since install appends to the user's .profile and .bash_aliases a log out is needed to complete installation.
+
+### Uninstall
+
+To uninstall chd, if it is installed, simply run the following from any directory:
+
+`. chduninstall`
+
+Similarly to install, uninstall needs log out to complete uninstallation.
+
+### Usage
+
+A usage guide can be found using:
+
+`chd help`
+
+To change directory, use a directory name:
+
+`chd name`
+
+To get a list of your linked directories use:
+
+`chd list`
+
+To add onto your list of linked directories use:
+
+`chd add name directory`
+
+To delete an existing linked directory use:
+
+`chd delete name`
+
+###### Note:
+
+More than one directory name is allowed to point to a single directory, however each directory name must be unique.
