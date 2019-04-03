@@ -3,11 +3,11 @@ A script to make changing to frequently visited and or long path directories fas
 Then by using 'chd name' the terminal will change to the linked directory.
 
 ### Installation
-To install chd first clone the repositroy to your desired directory using:
+To install chd, first clone the repositroy to your desired directory using:
 
 `git clone https://github.com/Remedee/chd`
 
-Change directory (cd) into the chd folder. Then run the install file using:
+Next change directory into the chd folder. Then run the install file using:
 
 `. chdinstall`
 
