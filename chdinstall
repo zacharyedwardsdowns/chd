@@ -13,7 +13,7 @@ tab='    ' # For appropriate spacing.
 # Add the directory to .profile.
 echo '' >> ~/.profile
 echo '# Adds chd to path. If uninstalling also remove chd from ~/.bash_aliases.' >> ~/.profile
-echo "if [ -d "$chddir" ] ; then" >> ~/.profile
+echo "if [ -d "$chddir" ]; then" >> ~/.profile
 
 # Create the proper variable to add to path.
 pathchd='PATH="'

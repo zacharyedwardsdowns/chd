@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Removes the path from ~/.profile.
+eval 'sed -i "$!N;\~# Adds chd to path. If uninstalling also remove chd from \~/.bash_aliases.~d;P;D" ~/.profile'
+eval 'sed -i "/\/chd/,+2d" ~/.profile'
+
+# Put the line to remove into $alias.
+alias="/alias chd='. chd.sh'/d"
+# Prepare the sed statement.
+remove='sed -i "'
+remove+="$alias"
+remove+='" ~/.bash_aliases'
+# Execute the sed statement to remove chd from ~/.bash_aliases
+eval "$remove"
+
+# Tell the user log out must occur for changes to take effect.
+echo 'Removed chd from ~/.profile and ~/.bash_aliases.'
+echo 'Log Out or Restart needed for all changes to take effect.'
