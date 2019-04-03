@@ -145,14 +145,43 @@ elif [ $1 == "list" ]; then
 # Elif $1 is help then echo out a usage guide.
 elif [ $1 == "help" ]; then
 
-	echo "This command is used to shorten 'cd' to certain directories."
-	echo "It is used by specifying a directory after chd: 'chd directory'"
-	echo "A list of valid directories can be viewed with: 'chd list'"
-	echo "Directories can be added with 'chd add name directory':"
-	echo "chd add space ~/Documents/space"
-	echo "Now 'chd space' will cd to the directory '~/Documents/space'"
-	echo "Directories can be deleted with: 'chd delete name'"
-	echo "chd delete space"
+	echo "---------------------------------------------------------------------------------------
+Welcome to the chd usage guide!
+
+The chd command is used to link frequent and or long directories
+to short directory names to make chaning directories faster.
+
+A directory can have multiple directory names,
+but the same name cannot be used more than once.
+---------------------------------------------------------------------------------------
+Valid Commands:
+
+It is used by specifying a directory name after chd:
+'chd name'
+
+A list of supported directories and their directory name(s) can be viewed with:
+'chd list'
+
+Directories can be added with:
+'chd add name directory':
+
+Directories can be deleted with:
+'chd delete name'
+
+The usage guide you are viewing right now can be viewed with:
+'chd help'
+---------------------------------------------------------------------------------------
+(Un)Install:
+
+Because chd appends to ~/.profile and ~/.bash_aliases a Log Out
+or Restart is needed for changes made by (un)install to take effect.
+
+chd can be removed from your system at anytime by using:
+'. chduninstall'
+
+It can be (re)installed by using the following in the chd directory:
+'. chdinstall'
+---------------------------------------------------------------------------------------"
 
 # Elif $1 is add then add the directroy to chdlist unless the directory name is already in use or
 # the directory is already pointed to by another directory name. Unless specified by the user to add anyways.
