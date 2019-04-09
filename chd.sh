@@ -230,6 +230,8 @@ elif [ $1 == "add" ]; then
 
 	i=0 # Incrimentor variable.
 
+	abspath=$(readlink --canonicalize $3) # Get the absolute path of directory location $3.
+
 	for val in $(<$clpath) 	# Loop to search for existing directories.
 	do
 		if ! (($i % 2)); then # If the mod of $i is 0 then...
@@ -237,7 +239,7 @@ elif [ $1 == "add" ]; then
 			if [ $2 == $val ]; then # If $2 is equal to $val output error then exit.
 
 				echo "$2 is already in use as a directory name."
-				echo "Use a different name for the directory: '$3'"
+				echo "Use a different name for the directory: '$abspath'"
 				return
 
 			fi
@@ -246,15 +248,15 @@ elif [ $1 == "add" ]; then
 
 		else # If the mod of $i is 1 then...
 
-			if [ $3 == $val ]; then # If $3 is equal to $val then ask user for input on whether to add anyways.
+			if [ $abspath == $val ]; then # If $abspath is equal to $val then ask user for input on whether to add anyways.
 
-				echo "'$3' is already listed under the directory name: $tmp."
+				echo "'$abspath' is already listed under the directory name: $tmp."
 				read -p "Would you like to have it under both names? (Y/N): " response
 
 				if [ ${response,,} != "y" ] && [ ${response,,} != "yes" ]; then # If the user doesn't respond 'y' or 'yes' then exit.
 
 
-					echo "'$3' not created under the name $2."
+					echo "'$abspath' not created under the name $2."
 					return
 
 				fi
@@ -266,11 +268,11 @@ elif [ $1 == "add" ]; then
 		i=$(($i + 1)) # Incriment i.
 	done 
 
-	stordir="$2 $3" # Seperate the directory name and location by a space.
+	stordir="$2 $abspath" # Seperate the directory name and location by a space.
 
 	echo $stordir >> $clpath # Store them into chdlist.
 
-	echo "You may now use 'chd $2' to cd to '$3'" # Notifty the user that the directory has been adeded. 
+	echo "You may now use 'chd $2' to cd to '$abspath'" # Notifty the user that the directory has been adeded. 
 
 # Elif $1 is delete then delete the specified directory from chdlist if it exists.
 elif [ $1 == "delete" ]; then
