@@ -120,6 +120,7 @@ if [ $length == 0 ] && [ $1 != "add" ] && [ $1 != "help" ]; then
 elif [ $1 == "list" ]; then
 
 	i=0 # Incrimentor variable
+	notsupp=() # Array for storing no longer valid directories.
 
 	echo "---------------------"
 	echo "Supported Directories"
@@ -133,7 +134,16 @@ elif [ $1 == "list" ]; then
 
 		else # If $i mod 2 is 1 then echo $direc with $val.
 
-			echo "$direc $val" # Echo directory name and location.
+			if [ ! -d $val ]; then # If val is no longer a directory then append the directory name and location to notsupp.
+			
+				notsupp+=("$direc") # Append directory name.
+				notsupp+=("$val") # Append directory location.
+			
+			else
+
+				echo "$direc $val" # Echo directory name and location.
+
+			fi
 
 		fi
 
@@ -141,6 +151,37 @@ elif [ $1 == "list" ]; then
 	done 
 
 	echo "---------------------"
+
+	# If any no longer valid directories were found then echo them.
+	if [ ${#notsupp[@]} -ne 0 ]; then
+
+		i=0 # Reset $i to 0 for incrimenting.
+
+		echo ""
+		echo "---------------------"
+		echo " Invalid Directories "
+		echo "---------------------"
+
+		for notvalid in "${notsupp[@]}" # Iterate through notsupp and echo invalid directories.
+		do
+			if ! (($i % 2)); then # If $i mod 2 is 0 then store $notvalid into $direc.
+
+				direc=$notvalid
+
+			else # If $i mod 2 is 1 then echo $direc with $val as invalid directories.
+
+				echo "$direc $notvalid" # Echo directory name and location.
+
+			fi
+
+			i=$(($i + 1)) # Incriment i.
+		done
+		
+		echo ""
+		echo "Remove them with 'chd delete'"
+		echo "---------------------"
+
+	fi
 
 # Elif $1 is help then echo out a usage guide.
 elif [ $1 == "help" ]; then
@@ -296,13 +337,23 @@ else
 		if [ $val == $1 ]; then # If directory found then set found to true and loop one more time to get the directory location.
 
 			found=true
+			last=$val
 
 		elif $found; then # If directory found then...
 
-			val="cd $val" # Add 'cd ' infront of $val.
-			eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
-			break # Break the loop.
+			if [ ! -d $val ]; then # If the specified directory no longer exists then notify the user and exit.
 
+				echo "$val is no longer a valid directory."
+				echo "Use 'chd delete $last' to remove it."
+				return
+
+			else
+
+				val="cd $val" # Add 'cd ' infront of $val.
+				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
+				break # Break the loop.
+
+			fi
 		fi
 	done 
 
