@@ -42,6 +42,14 @@ if [ ! -z $2 ]; then
 
 	fi
 
+	# Prevent directory names containing a '/' from being added.
+	if [[ $2 == *[/]* ]];then
+
+		echo "'$2' is an invalid directory name. Cannot contain a '/'."
+		return
+
+	fi
+
 # If $2 is null then...
 else
 
@@ -341,10 +349,20 @@ elif [ $1 == "delete" ]; then
 else
 
 	found=false # Use to tell if directory exists.
+	dname=$1 # Set the directory name to search for.
+	subd="null" # Initialize subd as null.
+
+	# If there is a '/' in $1 prepare for cd to directories under specified one.
+	if [[ $1 == *[/]* ]];then
+
+		dname=$(echo "$1" | cut -d "/" -f1) # Grabs directory name before the first '/''.
+		subd=$(echo "$1" | cut -d "/" -f2-) # Grabs the directory location after the first '/'.
+
+	fi
 
 	for val in $(<$clpath) 	# Loop to search for the directory.
 	do
-		if [ $val == $1 ]; then # If directory found then set found to true and loop one more time to get the directory location.
+		if [ $val == $dname ]; then # If directory found then set found to true and loop one more time to get the directory location.
 
 			found=true
 			last=$val
@@ -361,6 +379,23 @@ else
 
 				val="cd $val" # Add 'cd ' infront of $val.
 				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
+
+				if [ $subd != "null" ];then # If a sub directory was provided then attempt to cd to it.
+
+					if [ -d $subd ];then # If the sub directory is a valid directory then cd to it.
+
+						val="cd $subd"
+						eval $val
+
+					else # If the sub-directory is not under $dname then echo an error and exit.
+
+						echo "'$subd' is not a valid sub-directory of '$val'"
+						return
+
+					fi
+
+				fi
+
 				break # Break the loop.
 
 			fi
@@ -370,7 +405,7 @@ else
 	# If the directory was not found then echo error and exit.
 	if ! $found; then
 
-		echo "$1 is not a supported directory. See directories with 'chd list'."
+		echo "$dname is not a supported directory. See directories with 'chd list'."
 		return
 
 	fi
