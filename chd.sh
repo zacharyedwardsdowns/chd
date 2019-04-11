@@ -34,6 +34,14 @@ if [ ! -z $2 ]; then
 
 	fi
 
+	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands.s
+	if [ $2 == "help" ] || [ $2 == "list" ] || [ $2 == "add" ] || [ $2 == "delete" ]; then
+	
+		echo "'$2' is a command. You are not allowed to use it as a directory name."
+		return
+
+	fi
+
 # If $2 is null then...
 else
 
