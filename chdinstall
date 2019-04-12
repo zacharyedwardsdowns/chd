@@ -25,8 +25,8 @@ echo "$tab$pathchd" >> ~/.profile
 echo 'fi' >> ~/.profile
 
 # Add an alias to .bash_aliases.
-echo "alias chd='. chd.sh'" >> ~/.bash_aliases
+echo "alias chd='. chd.sh'" >> ~/.bashrc
 
 # Tell the user log out must occur for changes to take effect.
-echo 'Changes made to ~/.profile and ~/.bash_aliases.'
+echo 'Changes made to ~/.profile and ~/.bashrc.'
 echo 'Log Out or Restart needed for installation to complete.'
