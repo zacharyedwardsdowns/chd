@@ -11,15 +11,11 @@ Next change directory into the chd folder. Then run the install file using:
 
 `. chdinstall`
 
-Since install appends to the user's .profile and .bash_aliases a log out is needed to complete installation.
-
 ### Uninstall
 
 To uninstall chd, if it is installed, simply run the following from any directory:
 
 `. chduninstall`
-
-Similarly to install, uninstall needs log out to complete uninstallation.
 
 ### Usage
 
