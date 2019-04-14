@@ -10,23 +10,24 @@ chddir="$home$chddir"
 
 tab='    ' # For appropriate spacing.
 
-# Add the directory to .profile.
-echo '' >> ~/.profile
-echo '# Adds chd to path. If uninstalling also remove chd from ~/.bash_aliases.' >> ~/.profile
-echo "if [ -d "$chddir" ]; then" >> ~/.profile
+# Add the directory to .bashrc.
+echo '' >> ~/.bashrc
+echo '# Adds chd to path. If uninstalling also remove chd from ~/.bash_aliases.' >> ~/.bashrc
+echo "if [ -d "$chddir" ]; then" >> ~/.bashrc
 
 # Create the proper variable to add to path.
 pathchd='PATH="'
 pathchd+="$chddir" 
 pathchd+=':$PATH'
 pathchd+='"'
-echo "$tab$pathchd" >> ~/.profile
+echo "$tab$pathchd" >> ~/.bashrc
+echo 'fi' >> ~/.bashrc
 
-echo 'fi' >> ~/.profile
-
-# Add an alias to .bash_aliases.
+# Add the alias to .bashrc.
+echo '' >> ~/.bashrc
+echo '# Alias to run chd.sh as chd.' >> ~/.bashrc
 echo "alias chd='. chd.sh'" >> ~/.bashrc
 
-# Tell the user log out must occur for changes to take effect.
-echo 'Changes made to ~/.profile and ~/.bashrc.'
-echo 'Log Out or Restart needed for installation to complete.'
+# Tell the user log out may need to occur for changes to take effect.
+echo 'Changes made to ~/.bashrc.'
+echo 'Log Out is sometimes needed for installation to complete.'
