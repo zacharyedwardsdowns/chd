@@ -26,7 +26,7 @@ if [ ! -z $2 ]; then
 	fi
 
 	# If $3 is null and $1 is add then echo error and exit.
-	if [ -z $3 ] && [ $1 == "add" ]; then
+	if [ -z "$3" ] && [ $1 == "add" ]; then
 
 		echo "No directory provided for add."
 		echo "Use 'chd help' to get a usage guide."
@@ -65,7 +65,7 @@ else
 fi
 
 # If $3 is not null then if it's not a directory then echo error and exit.
-if [ ! -z $3 ]; then
+if [ ! -z "$3" ]; then
 
 	# If $1 is delete then echo an error and exit.
 	if [ $1 == "delete" ]; then
@@ -75,11 +75,18 @@ if [ ! -z $3 ]; then
 		return
 
 	fi
-		
-	if [ ! -d $3 ]; then # If $3 is not a directory then echo error and exit.
+
+	tmp=$(readlink --canonicalize "$3") # Get the absolute path of directory location $3.
+
+	if [ ! -d "$tmp" ]; then # If $3 is not a directory then echo error and exit.
 
 		echo "'$3' is not a valid directory."
 		echo "Use 'chd help' for a usage guide."
+		return
+
+	elif [[ "$tmp" == *"fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa"* ]]; then # If the pattern used to replace spaces is found in the directory name tell them it's time to stop.
+
+		echo "Nice try but 'fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa' is not allowed in directory names.'"
 		return
 
 	fi
@@ -100,6 +107,18 @@ fi
 ###
 ### Handle valid inputs
 ###
+
+# Function to replace spaces with a long random string.
+remove_spaces ()
+{
+	dirspace=$(echo "$1" | sed 's/ /fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/g')
+}
+
+# Function to put spaces back into long random string.
+input_spaces ()
+{
+	dirspace=$(echo "$1" | sed 's/fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/ /g')
+}
 
 clpath=$(type -a chd.sh) # Get the path of the chd command.
 
@@ -135,7 +154,7 @@ if [ $length == 0 ] && [ $1 != "add" ] && [ $1 != "help" ]; then
 # ElIf $1 is list then echo the supported directories.
 elif [ $1 == "list" ]; then
 
-	i=0 # Incrimentor variable
+	i=0 # Incrimentor variable.
 	notsupp=() # Array for storing no longer valid directories.
 
 	echo "---------------------"
@@ -150,7 +169,14 @@ elif [ $1 == "list" ]; then
 
 		else # If $i mod 2 is 1 then echo $direc with $val.
 
-			if [ ! -d $val ]; then # If val is no longer a directory then append the directory name and location to notsupp.
+			if [[ $val == *"fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa"* ]]; then # If val contains pattern then replace it with spaces.
+
+				input_spaces "$val"
+				val="$dirspace"
+
+			fi
+
+			if [ ! -d "$val" ]; then # If val is no longer a directory then append the directory name and location to notsupp.
 			
 				notsupp+=("$direc") # Append directory name.
 				notsupp+=("$val") # Append directory location.
@@ -218,7 +244,7 @@ elif [ $1 == "add" ]; then
 
 	i=0 # Incrimentor variable.
 
-	abspath=$(readlink --canonicalize $3) # Get the absolute path of directory location $3.
+	abspath=$(readlink --canonicalize "$3") # Get the absolute path of directory location $3.
 
 	for val in $(<$clpath) 	# Loop to search for existing directories.
 	do
@@ -236,7 +262,14 @@ elif [ $1 == "add" ]; then
 
 		else # If the mod of $i is 1 then...
 
-			if [ $abspath == $val ]; then # If $abspath is equal to $val then ask user for input on whether to add anyways.
+			if [[ $val == *"fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa"* ]]; then # If val contains pattern then replace it with spaces.
+
+				input_spaces "$val"
+				val="$dirspace"
+
+			fi
+
+			if [ "$abspath" == "$val" ]; then # If $abspath is equal to $val then ask user for input on whether to add anyways.
 
 				echo "'$abspath' is already listed under the directory name: $tmp."
 				read -p "Would you like to have it under both names? (Y/N): " response
@@ -256,11 +289,20 @@ elif [ $1 == "add" ]; then
 		i=$(($i + 1)) # Incriment i.
 	done 
 
+	tmp="$abspath"
+
+	if [[ "$abspath" == *" "* ]]; then # If val contains space(s) then replace it with pattern.
+
+		remove_spaces "$abspath"
+		abspath="$dirspace"
+
+	fi
+
 	stordir="$2 $abspath" # Seperate the directory name and location by a space.
 
-	echo $stordir >> $clpath # Store them into chdlist.
+	echo "$stordir" >> $clpath # Store them into chdlist.
 
-	echo "You may now use 'chd $2' to cd to '$abspath'" # Notifty the user that the directory has been adeded. 
+	echo "You may now use 'chd $2' to cd to '$tmp'" # Notifty the user that the directory has been adeded. 
 
 # Elif $1 is delete then delete the specified directory from chdlist if it exists.
 elif [ $1 == "delete" ]; then
@@ -341,15 +383,22 @@ else
 
 		elif $found; then # If directory found then...
 
-			if [ ! -d $val ]; then # If the specified directory no longer exists then notify the user and exit.
+			if [[ $val == *"fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa"* ]]; then # If val contains pattern then replace it with spaces.
 
-				echo "$val is no longer a valid directory."
+				input_spaces "$val"
+				val="$dirspace"
+
+			fi
+
+			if [ ! -d "$val" ]; then # If the specified directory no longer exists then notify the user and exit.
+
+				echo "'$val' is no longer a valid directory."
 				echo "Use 'chd delete $last' to remove it."
 				return
 
 			else
 
-				val="cd $val" # Add 'cd ' infront of $val.
+				val="cd '$val'" # Add 'cd ' infront of $val.
 				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
 
 				if [ $subd != "null" ];then # If a sub directory was provided then attempt to cd to it.
