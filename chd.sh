@@ -5,7 +5,7 @@
 ###
 
 # If $1 is null then echo error and exit.
-if [ -z $1 ]; then
+if [ -z "$1" ]; then
 
 	echo "No directory provided."
 	echo "Use 'chd help' for a usage guide."
@@ -14,19 +14,19 @@ if [ -z $1 ]; then
 fi
 
 # If $2 is not null then...
-if [ ! -z $2 ]; then
+if [ ! -z "$2" ]; then
 
 	# If $1 is not add or delete then echo error and exit.
-	if [ $1 != "add" ] && [ $1 != "delete" ]; then
+	if [ "$1" != "add" ] && [ "$1" != "delete" ]; then
 
-        	echo "$1 is not a valid command."
+        echo "$1 is not a valid command."
 		echo "Use 'chd help' to get a usage guide."
-        	return
+        return
 	
 	fi
 
 	# If $3 is null and $1 is add then echo error and exit.
-	if [ -z "$3" ] && [ $1 == "add" ]; then
+	if [ -z "$3" ] && [ "$1" == "add" ]; then
 
 		echo "No directory provided for add."
 		echo "Use 'chd help' to get a usage guide."
@@ -35,7 +35,7 @@ if [ ! -z $2 ]; then
 	fi
 
 	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands.s
-	if [ $2 == "help" ] || [ $2 == "list" ] || [ $2 == "add" ] || [ $2 == "delete" ]; then
+	if [ "$2" == "help" ] || [ "$2" == "list" ] || [ "$2" == "add" ] || [ "$2" == "delete" ]; then
 	
 		echo "'$2' is a command. You are not allowed to use it as a directory name."
 		return
@@ -43,7 +43,7 @@ if [ ! -z $2 ]; then
 	fi
 
 	# Prevent directory names containing a '/' from being added.
-	if [[ $2 == *[/]* ]];then
+	if [[ "$2" == *[/]* ]];then
 
 		echo "'$2' is an invalid directory name. Cannot contain a '/'."
 		return
@@ -54,7 +54,7 @@ if [ ! -z $2 ]; then
 else
 
 	# If $1 is add or delete then echo an error and exit.
-	if [ $1 == "add" ] || [ $1 == "delete" ]; then
+	if [ "$1" == "add" ] || [ "$1" == "delete" ]; then
 
 		echo "Ivalid use of the $1 command."
 		echo "Use 'chd help' to get a usage guide."
@@ -68,7 +68,7 @@ fi
 if [ ! -z "$3" ]; then
 
 	# If $1 is delete then echo an error and exit.
-	if [ $1 == "delete" ]; then
+	if [ "$1" == "delete" ]; then
 
 		echo "Ivalid use of the $1 command."
 		echo "Use 'chd help' to get a usage guide."
@@ -146,13 +146,13 @@ fi
 length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
 
 # If the length of the directory list is 0 then echo error and exit if $1 is not add or help.
-if [ $length == 0 ] && [ $1 != "add" ] && [ $1 != "help" ]; then
+if [ $length == 0 ] && [ "$1" != "add" ] && [ "$1" != "help" ]; then
 
 	echo "No directories set. See 'chd help' on how to add directories."
 	return
 
 # ElIf $1 is list then echo the supported directories.
-elif [ $1 == "list" ]; then
+elif [ "$1" == "list" ]; then
 
 	i=0 # Incrimentor variable.
 	notsupp=() # Array for storing no longer valid directories.
@@ -226,7 +226,7 @@ elif [ $1 == "list" ]; then
 	fi
 
 # Elif $1 is help then echo out a usage guide.
-elif [ $1 == "help" ]; then
+elif [ "$1" == "help" ]; then
 
 	echo "--------------------------------------------------------------------------------------------
 'chd name'			To change to a directory linked by a name.
@@ -240,7 +240,7 @@ elif [ $1 == "help" ]; then
 
 # Elif $1 is add then add the directroy to chdlist unless the directory name is already in use or
 # the directory is already pointed to by another directory name. Unless specified by the user to add anyways.
-elif [ $1 == "add" ]; then
+elif [ "$1" == "add" ]; then
 
 	i=0 # Incrimentor variable.
 
@@ -305,7 +305,7 @@ elif [ $1 == "add" ]; then
 	echo "You may now use 'chd $2' to cd to '$tmp'" # Notifty the user that the directory has been adeded. 
 
 # Elif $1 is delete then delete the specified directory from chdlist if it exists.
-elif [ $1 == "delete" ]; then
+elif [ "$1" == "delete" ]; then
 
 	i=0 # Incrimtentor variable.
 	found=false # Used to tell if the specified directory was found.
@@ -401,11 +401,11 @@ else
 				val="cd '$val'" # Add 'cd ' infront of $val.
 				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
 
-				if [ $subd != "null" ];then # If a sub directory was provided then attempt to cd to it.
+				if [ "$subd" != "null" ];then # If a sub directory was provided then attempt to cd to it.
 
-					if [ -d $subd ];then # If the sub directory is a valid directory then cd to it.
+					if [ -d "$subd" ];then # If the sub directory is a valid directory then cd to it.
 
-						val="cd $subd"
+						val="cd '$subd'"
 						eval $val
 
 					else # If the sub-directory is not under $dname then echo an error and exit.
