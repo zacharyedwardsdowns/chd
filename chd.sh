@@ -4,59 +4,62 @@
 ### Handle any input errors.
 ###
 
-# If $1 is null then echo error and exit.
-if [ -z "$1" ]; then
+command=$1
+name=$2
+directory=$3
+invalid=$4
 
-	echo "No directory provided."
+# If $command is null then echo error and exit.
+if [ -z "$command" ]; then
+
+	echo "No command provided."
 	echo "Use 'chd help' for a usage guide."
 	return
 
 fi
 
-# If $2 is not null then...
-if [ ! -z "$2" ]; then
+# If $name is not null then...
+if [ ! -z "$name" ]; then
 
-	# If $1 is not add or delete then echo error and exit.
-	if [ "$1" != "add" ] && [ "$1" != "delete" ]; then
+	# If $command is not add or delete then echo error and exit.
+	if [ "$command" != "add" ] && [ "$command" != "delete" ]; then
 
-        echo "$1 is not a valid command."
+    echo "$command is not a valid command."
 		echo "Use 'chd help' to get a usage guide."
-        return
+    return
 	
 	fi
 
-	# If $3 is null and $1 is add then echo error and exit.
-	if [ -z "$3" ] && [ "$1" == "add" ]; then
+	# If $directory is null and $command is add then set $directory as '.' to add the current director
+	if [ -z "$directory" ] && [ "$command" == "add" ]; then
 
-		echo "No directory provided for add."
-		echo "Use 'chd help' to get a usage guide."
-		return
+		directory="$PWD"
 
 	fi
 
 	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands.s
-	if [ "$2" == "help" ] || [ "$2" == "list" ] || [ "$2" == "add" ] || [ "$2" == "delete" ]; then
+	if [ "$name" == "help" ] || [ "$name" == "list" ] || [ "$name" == "add" ] || [ "$name" == "delete" ]; then
 	
-		echo "'$2' is a command. You are not allowed to use it as a directory name."
+		echo "'$name' is a command. You are not allowed to use it as a directory name."
 		return
 
 	fi
 
 	# Prevent directory names containing a '/' from being added.
-	if [[ "$2" == *[/]* ]];then
+	if [[ "$name" == *[/]* ]];then
 
-		echo "'$2' is an invalid directory name. Cannot contain a '/'."
+		echo "'$name' is an invalid directory name. Cannot contain a '/'."
 		return
 
 	fi
 
-# If $2 is null then...
+# If $name is null then...
 else
 
-	# If $1 is add or delete then echo an error and exit.
-	if [ "$1" == "add" ] || [ "$1" == "delete" ]; then
+	# If $command is add or delete then echo an error and exit.
+	if [ "$command" == "add" ] || [ "$command" == "delete" ]; then
 
-		echo "Ivalid use of the $1 command."
+		echo "Invalid use of the $command command."
 		echo "Use 'chd help' to get a usage guide."
 		return
 
@@ -64,23 +67,23 @@ else
 
 fi
 
-# If $3 is not null then if it's not a directory then echo error and exit.
-if [ ! -z "$3" ]; then
+# If $directory is not null then if it's not a directory then echo error and exit.
+if [ ! -z "$directory" ]; then
 
-	# If $1 is delete then echo an error and exit.
-	if [ "$1" == "delete" ]; then
+	# If $command is delete then echo an error and exit.
+	if [ "$command" == "delete" ]; then
 
-		echo "Ivalid use of the $1 command."
+		echo "Invalid use of the $command command."
 		echo "Use 'chd help' to get a usage guide."
 		return
 
 	fi
 
-	tmp=$(readlink --canonicalize "$3") # Get the absolute path of directory location $3.
+	tmp=$(readlink --canonicalize "$directory") # Get the absolute path of directory location $directory.
 
-	if [ ! -d "$tmp" ]; then # If $3 is not a directory then echo error and exit.
+	if [ ! -d "$tmp" ]; then # If $directory is not a directory then echo error and exit.
 
-		echo "'$3' is not a valid directory."
+		echo "'$directory' is not a valid directory."
 		echo "Use 'chd help' for a usage guide."
 		return
 
@@ -93,10 +96,10 @@ if [ ! -z "$3" ]; then
 
 fi
 
-# If $4 is not null, the the command has been used completley wrong. Echo an error then exit.
-if [ ! -z $4 ]; then
+# If $invalid is not null, the the command has been used completely wrong. Echo an error then exit.
+if [ ! -z $invalid ]; then
 
-	echo "Ivalid use of the $1 command."
+	echo "Invalid use of the $command command."
 	echo "Use 'chd help' to get a usage guide."
 	return
 
@@ -111,13 +114,13 @@ fi
 # Function to replace spaces with a long random string.
 remove_spaces ()
 {
-	dirspace=$(echo "$1" | sed 's/ /fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/g')
+	dirspace=$(echo "$command" | sed 's/ /fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/g')
 }
 
 # Function to put spaces back into long random string.
 input_spaces ()
 {
-	dirspace=$(echo "$1" | sed 's/fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/ /g')
+	dirspace=$(echo "$command" | sed 's/fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/ /g')
 }
 
 clpath=$(type -a chd.sh) # Get the path of the chd command.
@@ -145,16 +148,16 @@ fi
 
 length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
 
-# If the length of the directory list is 0 then echo error and exit if $1 is not add or help.
-if [ $length == 0 ] && [ "$1" != "add" ] && [ "$1" != "help" ]; then
+# If the length of the directory list is 0 then echo error and exit if $command is not add or help.
+if [ $length == 0 ] && [ "$command" != "add" ] && [ "$command" != "help" ]; then
 
 	echo "No directories set. See 'chd help' on how to add directories."
 	return
 
-# ElIf $1 is list then echo the supported directories.
-elif [ "$1" == "list" ]; then
+# ElIf $command is list then echo the supported directories.
+elif [ "$command" == "list" ]; then
 
-	i=0 # Incrimentor variable.
+	i=0 # Incrementor variable.
 	notsupp=() # Array for storing no longer valid directories.
 
 	echo "---------------------"
@@ -189,7 +192,7 @@ elif [ "$1" == "list" ]; then
 
 		fi
 
-		i=$(($i + 1)) # Incriment i.
+		i=$(($i + 1)) # Increment i.
 	done 
 
 	echo "---------------------"
@@ -197,7 +200,7 @@ elif [ "$1" == "list" ]; then
 	# If any no longer valid directories were found then echo them.
 	if [ ${#notsupp[@]} -ne 0 ]; then
 
-		i=0 # Reset $i to 0 for incrimenting.
+		i=0 # Reset $i to 0 for incrementing.
 
 		echo ""
 		echo "---------------------"
@@ -216,7 +219,7 @@ elif [ "$1" == "list" ]; then
 
 			fi
 
-			i=$(($i + 1)) # Incriment i.
+			i=$(($i + 1)) # Increment i.
 		done
 		
 		echo ""
@@ -225,8 +228,8 @@ elif [ "$1" == "list" ]; then
 
 	fi
 
-# Elif $1 is help then echo out a usage guide.
-elif [ "$1" == "help" ]; then
+# Elif $command is help then echo out a usage guide.
+elif [ "$command" == "help" ]; then
 
 	echo "--------------------------------------------------------------------------------------------
 'chd name'			To change to a directory linked by a name.
@@ -238,21 +241,21 @@ elif [ "$1" == "help" ]; then
 '. chdinstall' 			To (re)install chd. (Run from within the chd directory).
 --------------------------------------------------------------------------------------------"
 
-# Elif $1 is add then add the directroy to chdlist unless the directory name is already in use or
+# Elif $command is add then add the directory to chdlist unless the directory name is already in use or
 # the directory is already pointed to by another directory name. Unless specified by the user to add anyways.
-elif [ "$1" == "add" ]; then
+elif [ "$command" == "add" ]; then
 
-	i=0 # Incrimentor variable.
+	i=0 # Incrementor variable.
 
-	abspath=$(readlink --canonicalize "$3") # Get the absolute path of directory location $3.
+	abspath=$(readlink --canonicalize "$directory") # Get the absolute path of directory location $directory.
 
 	for val in $(<$clpath) 	# Loop to search for existing directories.
 	do
 		if ! (($i % 2)); then # If the mod of $i is 0 then...
 
-			if [ $2 == $val ]; then # If $2 is equal to $val output error then exit.
+			if [ $name == $val ]; then # If $name is equal to $val output error then exit.
 
-				echo "$2 is already in use as a directory name."
+				echo "$name is already in use as a directory name."
 				echo "Use a different name for the directory: '$abspath'"
 				return
 
@@ -277,7 +280,7 @@ elif [ "$1" == "add" ]; then
 				if [ ${response,,} != "y" ] && [ ${response,,} != "yes" ]; then # If the user doesn't respond 'y' or 'yes' then exit.
 
 
-					echo "'$abspath' not created under the name $2."
+					echo "'$abspath' not created under the name $name."
 					return
 
 				fi
@@ -286,7 +289,7 @@ elif [ "$1" == "add" ]; then
 
 		fi
 
-		i=$(($i + 1)) # Incriment i.
+		i=$(($i + 1)) # Increment i.
 	done 
 
 	tmp="$abspath"
@@ -298,16 +301,16 @@ elif [ "$1" == "add" ]; then
 
 	fi
 
-	stordir="$2 $abspath" # Seperate the directory name and location by a space.
+	stordir="$name $abspath" # Separate the directory name and location by a space.
 
 	echo "$stordir" >> $clpath # Store them into chdlist.
 
-	echo "You may now use 'chd $2' to cd to '$tmp'" # Notifty the user that the directory has been adeded. 
+	echo "You may now use 'chd $name' to cd to '$tmp'" # Notify the user that the directory has been added. 
 
-# Elif $1 is delete then delete the specified directory from chdlist if it exists.
-elif [ "$1" == "delete" ]; then
+# Elif $command is delete then delete the specified directory from chdlist if it exists.
+elif [ "$command" == "delete" ]; then
 
-	i=0 # Incrimtentor variable.
+	i=0 # Incrementor variable.
 	found=false # Used to tell if the specified directory was found.
 
 	cldpath=${clpath%chdlist} # Remove chdlist from the end of clpath and store in cldpath.
@@ -323,8 +326,8 @@ elif [ "$1" == "delete" ]; then
 
 		fi
 
-		# If $val is $2 then set found to true.
-		if [ $val == $2 ]; then
+		# If $val is $name then set found to true.
+		if [ $val == $name ]; then
 
 			found=true
 
@@ -342,35 +345,35 @@ elif [ "$1" == "delete" ]; then
 
 		fi
 
-		i=$(($i + 1)) # Incriment i.
+		i=$(($i + 1)) # Increment i.
 	done <$clpath> $cldpath # Output echo statements to cldel.
 
-	# If the length of chdlist is the same as cldel then directory name $2 doesn't exist. Remove cldel.
+	# If the length of chdlist is the same as cldel then directory name $name doesn't exist. Remove cldel.
 	if [ $length == $(wc -l < $cldpath) ];then
 
-		echo "$2 is not a directory name. Nothing deleted."
+		echo "$name is not a directory name. Nothing deleted."
 		rm $cldpath
 
 	# Else the specified directory name and directory location were removed. Make cldel into chdlist.
 	else
 
-		echo "$2 was removed from supported directories."
+		echo "$name was removed from supported directories."
 		mv $cldpath $clpath
 
 	fi
 
-# Else attempt to change directories if $1 is a directory name in chdlist.
+# Else attempt to change directories if $command is a directory name in chdlist.
 else
 
 	found=false # Use to tell if directory exists.
-	dname=$1 # Set the directory name to search for.
+	dname=$command # Set the directory name to search for.
 	subd="null" # Initialize subd as null.
 
-	# If there is a '/' in $1 prepare for cd to directories under specified one.
-	if [[ $1 == *[/]* ]];then
+	# If there is a '/' in $command prepare for cd to directories under specified one.
+	if [[ $command == *[/]* ]];then
 
-		dname=$(echo "$1" | cut -d "/" -f1) # Grabs directory name before the first '/''.
-		subd=$(echo "$1" | cut -d "/" -f2-) # Grabs the directory location after the first '/'.
+		dname=$(echo "$command" | cut -d "/" -f1) # Grabs directory name before the first '/''.
+		subd=$(echo "$command" | cut -d "/" -f2-) # Grabs the directory location after the first '/'.
 
 	fi
 
@@ -398,7 +401,7 @@ else
 
 			else
 
-				val="cd '$val'" # Add 'cd ' infront of $val.
+				val="cd '$val'" # Add 'cd ' in front of $val.
 				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
 
 				if [ "$subd" != "null" ];then # If a sub directory was provided then attempt to cd to it.
