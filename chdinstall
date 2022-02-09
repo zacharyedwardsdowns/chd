@@ -7,27 +7,28 @@ home='$HOME'
 prefix="/home/$USER"
 chddir=${chddir#"$prefix"}
 chddir="$home$chddir"
+chddir="${chddir/$HOME/""}"
 
 tab='    ' # For appropriate spacing.
 
 # Add the directory to .bashrc.
-echo '' >> ~/.bashrc
-echo '# Adds chd to path. If uninstalling also remove chd from ~/.bash_aliases.' >> ~/.bashrc
-echo "if [ -d "$chddir" ]; then" >> ~/.bashrc
+echo '' >>~/.bashrc
+echo '# Adds chd to path.' >>~/.bashrc
+echo "if [ -d "$chddir" ]; then" >>~/.bashrc
 
 # Create the proper variable to add to path.
 pathchd='PATH="'
-pathchd+="$chddir" 
+pathchd+="$chddir"
 pathchd+=':$PATH'
 pathchd+='"'
-echo "$tab$pathchd" >> ~/.bashrc
-echo 'fi' >> ~/.bashrc
+echo "$tab$pathchd" >>~/.bashrc
+echo 'fi' >>~/.bashrc
 
 # Add the alias to .bashrc.
-echo '' >> ~/.bashrc
-echo '# Alias to run chd.sh as chd.' >> ~/.bashrc
-echo "alias chd='. chd.sh'" >> ~/.bashrc
+echo '' >>~/.bashrc
+echo '# Alias to run chd.sh as chd.' >>~/.bashrc
+echo "alias chd='. chd.sh'" >>~/.bashrc
 
-# Tell the user log out may need to occur for changes to take effect.
+# Tell the user terminal restart needed to take effect.
 echo 'Changes made to ~/.bashrc.'
-echo 'Log Out is sometimes needed for installation to complete.'
+echo 'Restart your terminal to use the chd command line tool!'

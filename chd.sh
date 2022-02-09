@@ -37,7 +37,7 @@ if [ ! -z "$name" ]; then
 
 	fi
 
-	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands
+	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands.
 	if [ "$name" == "help" ] || [ "$name" == "list" ] || [ "$name" == "add" ] || [ "$name" == "delete" ]; then
 
 		echo "'$name' is a command. You are not allowed to use it as a directory name."
