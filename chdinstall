@@ -1,4 +1,8 @@
 #!/bin/bash
+cd "$(dirname "$0")" || (
+  echo -e "\nFailed to change directory at [$0: $LINENO]"
+  exit 1
+)
 
 chddir=$(pwd) # Store the installation directory into chddir.
 
@@ -29,6 +33,6 @@ echo '' >>~/.bashrc
 echo '# Alias to run chd.sh as chd.' >>~/.bashrc
 echo "alias chd='. chd.sh'" >>~/.bashrc
 
-# Tell the user terminal restart needed to take effect.
+# Tell the user a terminal restart is needed.
 echo 'Changes made to ~/.bashrc.'
 echo 'Restart your terminal to use the chd command line tool!'

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Removes the path from ~/.bashrc.
-eval 'sed -i "$!N;\~# Adds chd to path. If uninstalling also remove chd from \~/.bash_aliases.~d;P;D" ~/.bashrc'
+eval 'sed -i "$!N;\~# Adds chd to path.~d;P;D" ~/.bashrc'
 eval 'sed -i "/\/chd/,+5d" ~/.bashrc'
 
-# Tell the user log out may need to occur for changes to take effect.
+# Tell the user a terminal restart is needed.
 echo 'Removed chd from ~/.bashrc'
-echo 'Log Out is sometimes needed for all changes to take effect.'
+echo 'Restart your terminal to complete uninstall.'
