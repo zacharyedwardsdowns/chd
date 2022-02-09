@@ -5,19 +5,19 @@ Then by using 'chd name' the terminal will change to the linked directory.
 
 ### Installation
 
-To install chd, first clone the repository to your desired directory using:
+Run the install file using:
 
-`git clone https://github.com/Remedee/chd`
+`sh chdinstall`
 
-Next change directory into the chd folder. Then run the install file using:
-
-`. chdinstall`
+Then restart your terminal.
 
 ### Uninstall
 
-To uninstall chd, if it is installed, simply run the following from any directory:
+Run the uninstall command:
 
-`. chduninstall`
+`chd uninstall`
+
+Then proceed to remove the chd directory from the system.
 
 ### Usage
 

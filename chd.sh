@@ -119,20 +119,9 @@ input_spaces() {
 	dirspace=$(echo "$command" | sed 's/fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/ /g')
 }
 
-clpath=$(type -a chd.sh) # Get the path of the chd command.
-
-# Retrieve the path from type -a output.
-for val in $clpath; do
-	if [ $val != "chd" ] && [ $val != "is" ]; then
-
-		clpath=$val
-
-	fi
-done
-
-clpath=${clpath%.sh}  # Remove .sh from the end of clpath.
-list="list"           # Define list with a value of list.
-clpath="$clpath$list" # Concatenate $clpath and $list into clpath.
+clpath="$(dirname "${BASH_SOURCE[0]}")" # Get the path of the chd command.
+list="/chdlist"                         # Define list with the name of the list file.
+clpath="$clpath$list"                   # Concatenate $clpath and $list into clpath.
 
 # If chdlist is not found then create it!
 if [ ! -f $clpath ]; then
@@ -159,9 +148,8 @@ elif [ "$command" == "list" ]; then
 	echo "Supported Directories"
 	echo "---------------------"
 
-	for val in $(# Loop to display supported directories.
-		<$clpath
-	); do
+	# Loop to display supported directories.
+	for val in $(<$clpath); do
 		if ! (($i % 2)); then # If $i mod 2 is 0 then set direc to $val.
 
 			direc="$val:" # Get the directory name when even.
@@ -232,8 +220,7 @@ elif [ "$command" == "help" ]; then
 'chd help'			To view the usage guide you are seeing right now.
 'chd add name directory'	To add support for a directory with a name.
 'chd delete name'		To delete support for a directory using a name.
-'. chduninstall'		To remove chd from your system at anytime.
-'. chdinstall' 			To (re)install chd. (Run from within the chd directory).
+'sh chduninstall'		To remove chd from your system at anytime.
 --------------------------------------------------------------------------------------------"
 
 # Elif $command is add then add the directory to chdlist unless the directory name is already in use or
@@ -244,9 +231,8 @@ elif [ "$command" == "add" ]; then
 
 	abspath=$(readlink --canonicalize "$directory") # Get the absolute path of directory location $directory.
 
-	for val in $(# Loop to search for existing directories.
-		<$clpath
-	); do
+	# Loop to search for existing directories.
+	for val in $(<$clpath); do
 		if ! (($i % 2)); then # If the mod of $i is 0 then...
 
 			if [ $name == $val ]; then # If $name is equal to $val output error then exit.
@@ -312,9 +298,8 @@ elif [ "$command" == "delete" ]; then
 	cldel="cldel"             # Define cldel with a value of cldel.
 	cldpath="$cldpath$cldel"  # Concatenate $cldel to the end of $cldpath.
 
-	for val in $(# Loop for directory to delete.
-		<$clpath
-	); do
+	# Loop for directory to delete.
+	for val in $(<$clpath); do
 		# If a found is true and $val is a directory name set found to false.
 		if $found && ! (($i % 2)); then
 
@@ -358,6 +343,16 @@ elif [ "$command" == "delete" ]; then
 
 	fi
 
+# Elif $command is uninstall then remove the alias from ~/.bash_profile.
+elif [ "$command" == "uninstall" ]; then
+
+	# Removes the path from ~/.bash_profile.
+	eval 'sed -i "/alias chd=/d" ~/.bash_profile'
+
+	# Tell the user a terminal restart is needed.
+	echo 'Removed chd from ~/.bash_profile'
+	echo 'Restart your terminal to complete uninstall.'
+
 # Else attempt to change directories if $command is a directory name in chdlist.
 else
 
@@ -373,9 +368,8 @@ else
 
 	fi
 
-	for val in $(# Loop to search for the directory.
-		<$clpath
-	); do
+	# Loop to search for the directory.
+	for val in $(<$clpath); do
 		if [ $val == $dname ]; then # If directory found then set found to true and loop one more time to get the directory location.
 
 			found=true

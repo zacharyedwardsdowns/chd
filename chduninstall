@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Removes the path from ~/.bashrc.
-eval 'sed -i "$!N;\~# Adds chd to path.~d;P;D" ~/.bashrc'
-eval 'sed -i "/\/chd/,+5d" ~/.bashrc'
-
-# Tell the user a terminal restart is needed.
-echo 'Removed chd from ~/.bashrc'
-echo 'Restart your terminal to complete uninstall.'

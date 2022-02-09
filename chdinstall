@@ -13,26 +13,9 @@ chddir=${chddir#"$prefix"}
 chddir="$home$chddir"
 chddir="${chddir/$HOME/""}"
 
-tab='    ' # For appropriate spacing.
-
-# Add the directory to .bashrc.
-echo '' >>~/.bashrc
-echo '# Adds chd to path.' >>~/.bashrc
-echo "if [ -d "$chddir" ]; then" >>~/.bashrc
-
-# Create the proper variable to add to path.
-pathchd='PATH="'
-pathchd+="$chddir"
-pathchd+=':$PATH'
-pathchd+='"'
-echo "$tab$pathchd" >>~/.bashrc
-echo 'fi' >>~/.bashrc
-
-# Add the alias to .bashrc.
-echo '' >>~/.bashrc
-echo '# Alias to run chd.sh as chd.' >>~/.bashrc
-echo "alias chd='. chd.sh'" >>~/.bashrc
+# Add the alias to .bash_profile.
+echo "alias chd='. $chddir/chd.sh'" >>~/.bash_profile
 
 # Tell the user a terminal restart is needed.
-echo 'Changes made to ~/.bashrc.'
+echo 'Changes made to ~/.bash_profile.'
 echo 'Restart your terminal to use the chd command line tool!'
