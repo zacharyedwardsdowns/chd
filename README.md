@@ -1,9 +1,11 @@
 # chd
+
 A script to make changing to frequently visited and or long path directories faster by allowing the user to link it to a name.
 Then by using 'chd name' the terminal will change to the linked directory.
 
 ### Installation
-To install chd, first clone the repositroy to your desired directory using:
+
+To install chd, first clone the repository to your desired directory using:
 
 `git clone https://github.com/Remedee/chd`
 
