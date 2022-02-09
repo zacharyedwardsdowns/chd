@@ -24,10 +24,10 @@ if [ ! -z "$name" ]; then
 	# If $command is not add or delete then echo error and exit.
 	if [ "$command" != "add" ] && [ "$command" != "delete" ]; then
 
-    echo "$command is not a valid command."
+		echo "$command is not a valid command."
 		echo "Use 'chd help' to get a usage guide."
-    return
-	
+		return
+
 	fi
 
 	# If $directory is null and $command is add then set $directory as '.' to add the current director
@@ -37,16 +37,16 @@ if [ ! -z "$name" ]; then
 
 	fi
 
-	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands.s
+	# Not allowed to use 'help', 'list', 'add', or 'delete' as directory names in the add or delete commands
 	if [ "$name" == "help" ] || [ "$name" == "list" ] || [ "$name" == "add" ] || [ "$name" == "delete" ]; then
-	
+
 		echo "'$name' is a command. You are not allowed to use it as a directory name."
 		return
 
 	fi
 
 	# Prevent directory names containing a '/' from being added.
-	if [[ "$name" == *[/]* ]];then
+	if [[ "$name" == *[/]* ]]; then
 
 		echo "'$name' is an invalid directory name. Cannot contain a '/'."
 		return
@@ -105,29 +105,24 @@ if [ ! -z $invalid ]; then
 
 fi
 
-
-
 ###
 ### Handle valid inputs
 ###
 
 # Function to replace spaces with a long random string.
-remove_spaces ()
-{
+remove_spaces() {
 	dirspace=$(echo "$command" | sed 's/ /fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/g')
 }
 
 # Function to put spaces back into long random string.
-input_spaces ()
-{
+input_spaces() {
 	dirspace=$(echo "$command" | sed 's/fCQjEH88ToiQgUnbkMJs-kZamcppqThoNlD92iXpa/ /g')
 }
 
 clpath=$(type -a chd.sh) # Get the path of the chd command.
 
 # Retrieve the path from type -a output.
-for val in $clpath
-do
+for val in $clpath; do
 	if [ $val != "chd" ] && [ $val != "is" ]; then
 
 		clpath=$val
@@ -135,8 +130,8 @@ do
 	fi
 done
 
-clpath=${clpath%.sh} # Remove .sh from the end of clpath.
-list="list" # Define list with a value of list.
+clpath=${clpath%.sh}  # Remove .sh from the end of clpath.
+list="list"           # Define list with a value of list.
 clpath="$clpath$list" # Concatenate $clpath and $list into clpath.
 
 # If chdlist is not found then create it!
@@ -146,7 +141,7 @@ if [ ! -f $clpath ]; then
 
 fi
 
-length=$(wc -l < $clpath) # Get the length of the directory list (chdlist).
+length=$(wc -l <$clpath) # Get the length of the directory list (chdlist).
 
 # If the length of the directory list is 0 then echo error and exit if $command is not add or help.
 if [ $length == 0 ] && [ "$command" != "add" ] && [ "$command" != "help" ]; then
@@ -157,15 +152,16 @@ if [ $length == 0 ] && [ "$command" != "add" ] && [ "$command" != "help" ]; then
 # ElIf $command is list then echo the supported directories.
 elif [ "$command" == "list" ]; then
 
-	i=0 # Incrementor variable.
+	i=0        # Incrementor variable.
 	notsupp=() # Array for storing no longer valid directories.
 
 	echo "---------------------"
 	echo "Supported Directories"
 	echo "---------------------"
 
-	for val in $(<$clpath) 	# Loop to display supported directories.
-	do
+	for val in $(# Loop to display supported directories.
+		<$clpath
+	); do
 		if ! (($i % 2)); then # If $i mod 2 is 0 then set direc to $val.
 
 			direc="$val:" # Get the directory name when even.
@@ -180,10 +176,10 @@ elif [ "$command" == "list" ]; then
 			fi
 
 			if [ ! -d "$val" ]; then # If val is no longer a directory then append the directory name and location to notsupp.
-			
+
 				notsupp+=("$direc") # Append directory name.
-				notsupp+=("$val") # Append directory location.
-			
+				notsupp+=("$val")   # Append directory location.
+
 			else
 
 				echo "$direc $val" # Echo directory name and location.
@@ -193,7 +189,7 @@ elif [ "$command" == "list" ]; then
 		fi
 
 		i=$(($i + 1)) # Increment i.
-	done 
+	done
 
 	echo "---------------------"
 
@@ -207,9 +203,8 @@ elif [ "$command" == "list" ]; then
 		echo " Invalid Directories "
 		echo "---------------------"
 
-		for notvalid in "${notsupp[@]}" # Iterate through notsupp and echo invalid directories.
-		do
-			if ! (($i % 2)); then # If $i mod 2 is 0 then store $notvalid into $direc.
+		for notvalid in "${notsupp[@]}"; do # Iterate through notsupp and echo invalid directories.
+			if ! (($i % 2)); then              # If $i mod 2 is 0 then store $notvalid into $direc.
 
 				direc=$notvalid
 
@@ -221,7 +216,7 @@ elif [ "$command" == "list" ]; then
 
 			i=$(($i + 1)) # Increment i.
 		done
-		
+
 		echo ""
 		echo "Remove them with 'chd delete'"
 		echo "---------------------"
@@ -249,8 +244,9 @@ elif [ "$command" == "add" ]; then
 
 	abspath=$(readlink --canonicalize "$directory") # Get the absolute path of directory location $directory.
 
-	for val in $(<$clpath) 	# Loop to search for existing directories.
-	do
+	for val in $(# Loop to search for existing directories.
+		<$clpath
+	); do
 		if ! (($i % 2)); then # If the mod of $i is 0 then...
 
 			if [ $name == $val ]; then # If $name is equal to $val output error then exit.
@@ -279,7 +275,6 @@ elif [ "$command" == "add" ]; then
 
 				if [ ${response,,} != "y" ] && [ ${response,,} != "yes" ]; then # If the user doesn't respond 'y' or 'yes' then exit.
 
-
 					echo "'$abspath' not created under the name $name."
 					return
 
@@ -290,7 +285,7 @@ elif [ "$command" == "add" ]; then
 		fi
 
 		i=$(($i + 1)) # Increment i.
-	done 
+	done
 
 	tmp="$abspath"
 
@@ -303,22 +298,23 @@ elif [ "$command" == "add" ]; then
 
 	stordir="$name $abspath" # Separate the directory name and location by a space.
 
-	echo "$stordir" >> $clpath # Store them into chdlist.
+	echo "$stordir" >>$clpath # Store them into chdlist.
 
-	echo "You may now use 'chd $name' to cd to '$tmp'" # Notify the user that the directory has been added. 
+	echo "You may now use 'chd $name' to cd to '$tmp'" # Notify the user that the directory has been added.
 
 # Elif $command is delete then delete the specified directory from chdlist if it exists.
 elif [ "$command" == "delete" ]; then
 
-	i=0 # Incrementor variable.
+	i=0         # Incrementor variable.
 	found=false # Used to tell if the specified directory was found.
 
 	cldpath=${clpath%chdlist} # Remove chdlist from the end of clpath and store in cldpath.
-	cldel="cldel" # Define cldel with a value of cldel.
-	cldpath="$cldpath$cldel" # Concatenate $cldel to the end of $cldpath.
+	cldel="cldel"             # Define cldel with a value of cldel.
+	cldpath="$cldpath$cldel"  # Concatenate $cldel to the end of $cldpath.
 
-	for val in $(<$clpath) 	# Loop for directory to delete.
-	do
+	for val in $(# Loop for directory to delete.
+		<$clpath
+	); do
 		# If a found is true and $val is a directory name set found to false.
 		if $found && ! (($i % 2)); then
 
@@ -345,11 +341,11 @@ elif [ "$command" == "delete" ]; then
 
 		fi
 
-		i=$(($i + 1)) # Increment i.
-	done <$clpath> $cldpath # Output echo statements to cldel.
+		i=$(($i + 1))          # Increment i.
+	done <$clpath >$cldpath # Output echo statements to cldel.
 
 	# If the length of chdlist is the same as cldel then directory name $name doesn't exist. Remove cldel.
-	if [ $length == $(wc -l < $cldpath) ];then
+	if [ $length == $(wc -l <$cldpath) ]; then
 
 		echo "$name is not a directory name. Nothing deleted."
 		rm $cldpath
@@ -365,20 +361,21 @@ elif [ "$command" == "delete" ]; then
 # Else attempt to change directories if $command is a directory name in chdlist.
 else
 
-	found=false # Use to tell if directory exists.
+	found=false    # Use to tell if directory exists.
 	dname=$command # Set the directory name to search for.
-	subd="null" # Initialize subd as null.
+	subd="null"    # Initialize subd as null.
 
 	# If there is a '/' in $command prepare for cd to directories under specified one.
-	if [[ $command == *[/]* ]];then
+	if [[ $command == *[/]* ]]; then
 
 		dname=$(echo "$command" | cut -d "/" -f1) # Grabs directory name before the first '/''.
 		subd=$(echo "$command" | cut -d "/" -f2-) # Grabs the directory location after the first '/'.
 
 	fi
 
-	for val in $(<$clpath) 	# Loop to search for the directory.
-	do
+	for val in $(# Loop to search for the directory.
+		<$clpath
+	); do
 		if [ $val == $dname ]; then # If directory found then set found to true and loop one more time to get the directory location.
 
 			found=true
@@ -402,11 +399,11 @@ else
 			else
 
 				val="cd '$val'" # Add 'cd ' in front of $val.
-				eval $val # Evaluate $val without any quotes. (This changes to the specified directory.)
+				eval $val       # Evaluate $val without any quotes. (This changes to the specified directory.)
 
-				if [ "$subd" != "null" ];then # If a sub directory was provided then attempt to cd to it.
+				if [ "$subd" != "null" ]; then # If a sub directory was provided then attempt to cd to it.
 
-					if [ -d "$subd" ];then # If the sub directory is a valid directory then cd to it.
+					if [ -d "$subd" ]; then # If the sub directory is a valid directory then cd to it.
 
 						val="cd '$subd'"
 						eval $val
@@ -424,7 +421,7 @@ else
 
 			fi
 		fi
-	done 
+	done
 
 	# If the directory was not found then echo error and exit.
 	if ! $found; then
