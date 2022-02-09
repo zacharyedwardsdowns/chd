@@ -1,9 +1,4 @@
 #!/bin/bash
-cd "$(dirname "$0")" || (
-  echo -e "\nFailed to change directory at [$0: $LINENO]"
-  exit 1
-)
-
 chddir=$(pwd) # Store the installation directory into chddir.
 
 # Add $HOME into chddir

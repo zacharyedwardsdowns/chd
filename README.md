@@ -5,9 +5,13 @@ Then by using 'chd name' the terminal will change to the linked directory.
 
 ### Installation
 
+Move to the chd directory:
+
+`cd chd`
+
 Run the install file using:
 
-`sh chdinstall`
+`. chdinstall`
 
 Then restart your terminal.
 
